@@ -1,10 +1,11 @@
 package com.moto.inventory.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.persistence.Basic;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
+import com.fasterxml.jackson.annotation.JsonProperty;
+ 
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -19,37 +20,28 @@ public class Motorcycle {
     private Long id;
 
 
-    @NotBlank(message = "Chassis number is required")
     private String numChassis;
 
-    @NotBlank(message = "Model is required")
     private String model;
 
-    @NotBlank(message = "Brand is required")
     private String brand;
 
-    @NotNull(message = "Cylinder size is required")
-    @Min(value = 1, message = "Cylinder size must be positive")
     private Integer cylinderSize;
 
-    @NotNull(message = "New status is required")
+    @JsonProperty("isNew")
     private Boolean isNew;
 
-    @PositiveOrZero(message = "Mileage must be positive or zero")
     private Integer mileageKm;
 
-    @NotNull(message = "Purchase price is required")
-    @PositiveOrZero(message = "Purchase price must be positive or zero")
     private BigDecimal purchasePrice;
 
-    @NotNull(message = "Sell price is required")
-    @PositiveOrZero(message = "Sell price must be positive or zero")
     private BigDecimal sellPrice;
 
-    @NotNull(message = "Quantity is required")
-    @Min(value = 0, message = "Quantity must be positive or zero")
     private Integer quantity;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "LONGTEXT")
     private String image;
 
     @ManyToMany(mappedBy = "motorcycles")
@@ -60,7 +52,7 @@ public class Motorcycle {
     }
 
     public Motorcycle(String numChassis, String model, String brand, Integer cylinderSize, Boolean isNew,
-                      Integer mileageKm, BigDecimal purchasePrice, BigDecimal sellPrice, Integer quantity, String image , Integer version) {
+                      Integer mileageKm, BigDecimal purchasePrice, BigDecimal sellPrice, Integer quantity, String image) {
         this.numChassis = numChassis;
         this.model = model;
         this.brand = brand;
@@ -84,13 +76,7 @@ public class Motorcycle {
         this.id = id;
     }
 
-    public @NotNull(message = "New status is required") Boolean getNew() {
-        return isNew;
-    }
-
-    public void setNew(@NotNull(message = "New status is required") Boolean aNew) {
-        isNew = aNew;
-    }
+    // Use standard boolean accessors for Jackson
 
     public String getNumChassis() {
         return numChassis;

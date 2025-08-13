@@ -30,7 +30,7 @@ public class MotorcycleService {
     public Motorcycle save(Motorcycle motorcycle) {
         return motorcycleRepository.save(motorcycle);
     }
-    
+
     @Transactional
 
     public void deleteById(Long id) {

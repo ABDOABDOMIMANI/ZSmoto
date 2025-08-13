@@ -35,6 +35,9 @@ public class PieceMoto {
     @Min(value = 0, message = "Quantity must be positive or zero")
     private Integer quantity;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "LONGTEXT")
     private String image;
 
     @ManyToMany(mappedBy = "pieces")
