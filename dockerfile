@@ -1,24 +1,16 @@
-FROM maven:3.9.8-eclipse-temurin-17 AS build
+FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
 COPY pom.xml .
-COPY src ./src
-RUN mvn -q -DskipTests package
 
-FROM eclipse-temurin:17-jre
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-ENV SERVER_PORT=8080
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/app.jar"]
-FROM maven:3.9.8-eclipse-temurin-17 AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn -q -DskipTests package
+RUN mvn dependency:go-offline
 
-FROM eclipse-temurin:17-jre
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-ENV SERVER_PORT=8080
+
+COPY --from=build /app/target/moto-back-0.0.1-SNAPSHOT.jar .
+
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+ENTRYPOINT ["java","-jar","/app/moto-back-0.0.1-SNAPSHOT.jar"]
